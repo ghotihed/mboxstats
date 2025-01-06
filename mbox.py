@@ -41,8 +41,8 @@ class MboxReader:
         while True:
             line = self.handle.readline()
             lines_read += 1
-            progress_bar(lines_read, self.line_count)
             if line == b'' or (line.startswith(b'From ') and not line.startswith(b'From MAILER_DAEMON')):
+                progress_bar(lines_read, self.line_count)
                 if flags != 'skip-first':
                     yield flags
                 if line == b'':
