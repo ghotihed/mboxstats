@@ -74,21 +74,20 @@ try:
             num_deleted = 0
             for message in mbox:
                 for flag in message:
-                    match flag:
-                        case 'R':
-                            num_read += 1
-                        case 'O':
-                            num_non_recent += 1
-                        case 'A':
-                            num_answered += 1
-                        case 'F':
-                            num_flagged += 1
-                        case 'T':
-                            num_draft += 1
-                        case 'D':
-                            num_deleted += 1
+                    if flag == 'R':
+                        num_read += 1
+                    elif flag == 'O':
+                        num_non_recent += 1
+                    elif flag == 'A':
+                        num_answered += 1
+                    elif flag == 'F':
+                        num_flagged += 1
+                    elif flag == 'T':
+                        num_draft += 1
+                    elif flag == 'D':
+                        num_deleted += 1
                 num_messages += 1
-            print(f"\033[K{arg}: size={file_size:n}, count={num_messages:n}, viewed={num_non_recent:n}, unread={num_messages - num_read:n}, deleted={num_deleted:n}")
+            print(f"\033[K{arg}: size={file_size:n}, count={num_messages:n}, downloaded={num_non_recent:n}, unread={num_messages - num_read:n}, deleted={num_deleted:n}")
         arg_index += 1
 except KeyboardInterrupt:
     print()
