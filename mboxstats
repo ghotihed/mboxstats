@@ -156,7 +156,7 @@ try:
                     elif flag == 'D':
                         num_deleted += 1
                 num_messages += 1
-            print(f"\033[K{arg}: size={naturalsize(file_size, False, True)}, count={num_messages:n}, downloaded={num_non_recent:n}, unread={num_messages - num_read:n}, deleted={num_deleted:n}")
+            print(f"\033[K{arg}: size={naturalsize(file_size, False, True)}, count={num_messages:n}, unseen={num_messages - num_non_recent:n}, unread={num_messages - num_read:n}, replied={num_answered:n}, flagged={num_flagged:n}, draft={num_draft:n}, deleted={num_deleted:n}")
         arg_index += 1
 except KeyboardInterrupt:
     print()
