@@ -6,6 +6,75 @@ import subprocess
 import sys
 
 
+"""Bits and bytes related humanization."""
+
+suffixes = {
+    "decimal": (
+        " KB",
+        " MB",
+        " GB",
+        " TB",
+        " PB",
+        " EB",
+        " ZB",
+        " YB",
+        " RB",
+        " QB",
+    ),
+    "binary": (
+        " KiB",
+        " MiB",
+        " GiB",
+        " TiB",
+        " PiB",
+        " EiB",
+        " ZiB",
+        " YiB",
+        " RiB",
+        " QiB",
+    ),
+    "gnu": "KMGTPEZYRQ",
+}
+
+
+def naturalsize(
+    value,#: float | str,
+    binary: bool = False,
+    gnu: bool = False,
+    fmt: str = "%.1f",
+) -> str:
+    if gnu:
+        suffix = suffixes["gnu"]
+    elif binary:
+        suffix = suffixes["binary"]
+    else:
+        suffix = suffixes["decimal"]
+
+    base = 1024 if (gnu or binary) else 1000
+    if isinstance(value, str):
+        bytes_ = float(value)
+    else:
+        bytes_ = value
+
+    abs_bytes = abs(bytes_)
+
+    if abs_bytes == 1 and not gnu:
+        return f"{bytes_} Byte"
+
+    if abs_bytes < base:
+        return f"{bytes_}B" if gnu else f"{bytes_} Bytes"
+
+    unit = 1
+    s = ""
+    for i, s in enumerate(suffix, 2):
+        unit = base**i
+        if abs_bytes < unit:
+            break
+
+    ret: str = fmt % (base * (bytes_ / unit)) + s
+    return ret
+
+
 def linecount(filename):
     return int(subprocess.Popen(['wc', '-l', filename], stdout=subprocess.PIPE).communicate()[0].split()[0])
 
@@ -87,7 +156,7 @@ try:
                     elif flag == 'D':
                         num_deleted += 1
                 num_messages += 1
-            print(f"\033[K{arg}: size={file_size:n}, count={num_messages:n}, downloaded={num_non_recent:n}, unread={num_messages - num_read:n}, deleted={num_deleted:n}")
+            print(f"\033[K{arg}: size={naturalsize(file_size, False, True)}, count={num_messages:n}, downloaded={num_non_recent:n}, unread={num_messages - num_read:n}, deleted={num_deleted:n}")
         arg_index += 1
 except KeyboardInterrupt:
     print()
